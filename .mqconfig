@@ -1,0 +1,10 @@
+{
+	"active": "default",
+	"connections": [
+		{
+			"name": "default",
+			"url": "mongodb://localhost:27017",
+			"db": "test"
+		}
+	]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "mongo-query-cli",
+  "version": "0.1.0",
+  "description": "Let's make mongo shell queries from bash!",
+  "keywords": [
+    "mongodb",
+    "mongo",
+    "shell",
+    "queries",
+    "cli"
+  ],
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": {
+    "mq": "bin/mq.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "repository": "",
+  "author": "Dmitri Voronianski",
+  "license": "MIT",
+  "dependencies": {
+    "mongojs": "~0.7.5",
+    "commander": "~1.1.1",
+    "colors": "~0.6.0-1",
+    "underscore": "~1.4.4",
+    "cli-table": "~0.2.0"
+  }
+}
