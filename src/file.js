@@ -5,6 +5,10 @@ var Table = require('cli-table');
 
 var mqconfig = path.join(__dirname, '../.mqconfig');
 
+function activate () {
+
+}
+
 function setupField (connection, options, callback) {
 	if (!options || typeof options !== 'object') {
 		return callback('Options are incorrect!');
@@ -57,7 +61,8 @@ function showConnections (callback) {
 
 		var table = new Table({
 			head: ['Name', 'Connection', 'Database', 'Status'],
-			colWidths: [16, 45, 25, 10]
+			colWidths: [10, 35, 15, 10],
+			style : {compact: true, 'padding-left': 1}
 		});
 
 		data = JSON.parse(data);
@@ -78,6 +83,12 @@ function addConnection (connection, callback) {
 		}
 
 		data = JSON.parse(data);
+		_(data.connections).find(function (c) {
+			if (c.name === connection.name) {
+				return callback('Sorry, but name "' + connection.name +'" is already in use');
+			}
+		});
+
 		data.connections.push(connection);
 
 		fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
@@ -94,14 +105,10 @@ function removeConnection () {
 
 }
 
-function activate () {
-
-}
-
 module.exports = {
+	activate: activate,
 	setupField: setupField,
 	showConnections: showConnections,
 	addConnection: addConnection,
-	removeConnection: removeConnection,
-	activate: activate
+	removeConnection: removeConnection
 };

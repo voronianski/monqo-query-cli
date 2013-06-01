@@ -2,18 +2,18 @@
 
 var fs = require('fs');
 var path = require('path');
-var commander = require('commander');
+var programm = require('commander');
 var colors = require('colors');
 var dbUtil = require('../src/connector.js');
 var config = require('../src/file.js');
 
 var version = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
 
-commander
+programm
 	.version(version)
 	.option('-s, --save <file>', 'save output to specified file');
 
-commander
+programm
 	.command('connections')
 	.description('show available connections')
 	.action(function () {
@@ -25,21 +25,22 @@ commander
 		});
 	});
 
-commander
+programm
 	.command('create')
 	.description('create new connection')
-	.prompt({ name: 'Connection name: ', url: 'Connection url: ', db: 'Database name: '}, function (obj) {
-		console.log(obj);
-		config.addConnection(obj, function (err) {
-			handleError(err);
+	.action(function () {
+		programm.prompt({ name: 'Connection name: ', url: 'Connection url: ', db: 'Database name: '}, function (obj) {
+			config.addConnection(obj, function (err) {
+				handleError(err);
 
-			console.log('New connection "%s" was successfully created'.yellow, obj.name);
-			console.log('View all connections with "mq connections" or activate it with "mq start <name>"');
-			process.exit();
+				console.log('New connection "%s" was successfully created'.yellow, obj.name);
+				console.log('View all connections with "mq connections" or activate it with "mq start <name>"');
+				process.exit();
+			});
 		});
 	});
 
-commander
+programm
 	.command('set [connection]')
 	.description('setup fields to connection or current active if not specified')
 	.option('--db <value>', 'setup database name')
@@ -54,7 +55,7 @@ commander
 		});
 	});
 
-commander
+programm
 	.command('find [query]')
 	.description('select documents in collection')
 	.option('--url <connection>', 'set connection url string, default: localhost:27017')
@@ -77,7 +78,7 @@ commander
 		// TO DO: operators - http://docs.mongodb.org/manual/reference/operator/
 	});
 
-commander.parse(process.argv);
+programm.parse(process.argv);
 
 function handleError (error) {
 	if (error) {
