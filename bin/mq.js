@@ -7,7 +7,7 @@ var colors = require('colors');
 var dbUtil = require('../src/connector.js');
 var config = require('../src/file.js');
 
-var	version = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
+var version = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
 
 commander
 	.version(version)
@@ -22,7 +22,21 @@ commander
 
 			console.log(table);
 			process.exit();
-		})
+		});
+	});
+
+commander
+	.command('create')
+	.description('create new connection')
+	.prompt({ name: 'Connection name: ', url: 'Connection url: ', db: 'Database name: '}, function (obj) {
+		console.log(obj);
+		config.addConnection(obj, function (err) {
+			handleError(err);
+
+			console.log('New connection "%s" was successfully created'.yellow, obj.name);
+			console.log('View all connections with "mq connections" or activate it with "mq start <name>"');
+			process.exit();
+		});
 	});
 
 commander

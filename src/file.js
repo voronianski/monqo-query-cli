@@ -49,7 +49,7 @@ function setupField (connection, options, callback) {
 	});
 }
 
-function showConnections (callback	) {
+function showConnections (callback) {
 	fs.readFile(mqconfig, 'utf-8', function (err, data) {
 		if (err) {
 			return callback(err);
@@ -61,6 +61,7 @@ function showConnections (callback	) {
 		});
 
 		data = JSON.parse(data);
+
 		data.connections.forEach(function (c) {
 			var status = c.name === data.active ? 'active' : '';
 			table.push([c.name, c.url, c.db, status]);
@@ -70,11 +71,30 @@ function showConnections (callback	) {
 	});
 }
 
-function addConnection () {
+function addConnection (connection, callback) {
+	fs.readFile(mqconfig, 'utf-8', function (err, data) {
+		if (err) {
+			return callback(err);
+		}
 
+		data = JSON.parse(data);
+		data.connections.push(connection);
+
+		fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
+			if (err) {
+				return callback(err);
+			}
+
+			return callback(null);
+		});
+	});
 }
 
 function removeConnection () {
+
+}
+
+function activate () {
 
 }
 
@@ -82,5 +102,6 @@ module.exports = {
 	setupField: setupField,
 	showConnections: showConnections,
 	addConnection: addConnection,
-	removeConnection: removeConnection
+	removeConnection: removeConnection,
+	activate: activate
 };
