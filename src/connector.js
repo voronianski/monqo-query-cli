@@ -1,7 +1,7 @@
 var mongo = require('mongojs');
 var fs = require('fs');
 var path = require('path');
-var mqconfig = JSON.parse(fs.readFileSync(path.join(__dirname, '../.mqconfig')));
+//var mqconfig = JSON.parse(fs.readFileSync(path.join(__dirname, '../.mqconfig')));
 var url = 'mongodb://localhost:27017/likeastoredb';
 
 function find (query, options, callback) {

@@ -1,1 +1,0 @@
-{"connections":[{"name":"default","url":"mongodb://localhost:27017","db":"likeastoredb","active":true},{"name":"foo","url":"mongodb://test:8080","db":"roo","active":true}],"edited":"2013-06-02T14:46:54.072Z"}

@@ -41,13 +41,13 @@ programm
 	});
 
 programm
-	.command('active <name>')
-	.description('activate one of existing connections')
+	.command('remove <connection>')
+	.description('remove existing connection')
 	.action(function (name) {
-		config.activate(name, function (err) {
+		config.removeConnection(name, function (err) {
 			handleError(err);
 
-			console.log('Connection "%s" is active now'.yellow, name);
+			console.log('Connection "%s" is successfully removed'.yellow, name);
 			process.exit();
 		});
 	});
