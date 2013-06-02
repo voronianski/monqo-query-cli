@@ -34,20 +34,33 @@ programm
 				handleError(err);
 
 				console.log('New connection "%s" was successfully created'.yellow, obj.name);
-				console.log('View all connections with "mq connections" or activate it with "mq start <name>"');
+				console.log('View all connections with "mq connections" or activate it with "mq set --active <name>"');
 				process.exit();
 			});
 		});
 	});
 
 programm
-	.command('set [connection]')
+	.command('active <name>')
+	.description('activate one of existing connections')
+	.action(function (name) {
+		config.activate(name, function (err) {
+			handleError(err);
+
+			console.log('Connection "%s" is active now'.yellow, name);
+			process.exit();
+		});
+	});
+
+programm
+	.command('set <connection>')
 	.description('setup fields to connection or current active if not specified')
 	.option('--db <value>', 'setup database name')
 	.option('--url <value>', 'setup connection url')
 	.option('--name <value>', 'setup connection name')
+	.option('--active', 'set connection as active')
 	.action(function (connection, options) {
-		config.setupField(connection, options, function (err) {
+		config.setup(connection, options, function (err) {
 			handleError(err);
 
 			console.log('Database config changed succesfully!'.yellow);

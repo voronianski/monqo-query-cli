@@ -3,19 +3,28 @@ var path = require('path');
 var _ = require('underscore');
 var Table = require('cli-table');
 
-var mqconfig = path.join(__dirname, '../.mqconfig');
+var mqconfig = path.join(__dirname, '../.mqconfig'); // TO DO: move to ~/ dir
 
-function activate () {
+function activate (name, callback) {
+	fs.readFile(mqconfig, 'utf-8', function (err, data) {
+		if (err) {
+			return callback(err);
+		}
 
+		data = JSON.parse(data);
+		data.active = name;
+
+		return callback(null);
+	});
 }
 
-function setupField (connection, options, callback) {
-	if (!options || typeof options !== 'object') {
-		return callback('Options are incorrect!');
-	}
-
-	var fields = ['db', 'name', 'url'];
+function setup (connection, options, callback) {
+	var fields = ['db', 'name', 'url', 'active'];
 	options = _(options).pick(fields);
+
+	if (_(options).isEmpty()) {
+		return callback('Add options to change active connection');
+	}
 
 	fs.readFile(mqconfig, 'utf-8', function (err, data) {
 		if (err) {
@@ -24,24 +33,22 @@ function setupField (connection, options, callback) {
 
 		data = JSON.parse(data);
 
-		var cname = connection || data.active;
-
 		data.connections.forEach(function (c) {
-			var active = data.active === c.name;
 
 			if (options['name'] === c.name) {
 				return callback('This name is already in use!');
 			}
 
-			if (c.name === cname) {
+			if (connection === c.name) {
 				fields.forEach(function (field) {
 					if (options[field]) {
 						c[field] = options[field];
-						data.active = options['name'] && active ? options['name'] : data.active;
 					}
 				});
 			}
 		});
+
+		data.edited = new Date();
 
 		fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
 			if (err) {
@@ -62,13 +69,13 @@ function showConnections (callback) {
 		var table = new Table({
 			head: ['Name', 'Connection', 'Database', 'Status'],
 			colWidths: [10, 35, 15, 10],
-			style : {compact: true, 'padding-left': 1}
+			style : { compact: true }
 		});
 
 		data = JSON.parse(data);
 
 		data.connections.forEach(function (c) {
-			var status = c.name === data.active ? 'active' : '';
+			var status = c.active ? 'active' : '';
 			table.push([c.name, c.url, c.db, status]);
 		});
 
@@ -77,18 +84,24 @@ function showConnections (callback) {
 }
 
 function addConnection (connection, callback) {
+	if (!/^mongodb:\/\/.*?:\d+$/.test(connection.url)) {
+		return callback('Connection url is incorrect, example: mongodb://connection:port');
+	}
+
 	fs.readFile(mqconfig, 'utf-8', function (err, data) {
 		if (err) {
 			return callback(err);
 		}
 
 		data = JSON.parse(data);
+
 		_(data.connections).find(function (c) {
 			if (c.name === connection.name) {
-				return callback('Sorry, but name "' + connection.name +'" is already in use');
+				return callback('Sorry, but name "' + connection.name + '" is already in use');
 			}
 		});
 
+		connection.active = false;
 		data.connections.push(connection);
 
 		fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
@@ -107,7 +120,7 @@ function removeConnection () {
 
 module.exports = {
 	activate: activate,
-	setupField: setupField,
+	setup: setup,
 	showConnections: showConnections,
 	addConnection: addConnection,
 	removeConnection: removeConnection

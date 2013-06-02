@@ -1,1 +1,1 @@
-{"active":"default","connections":[{"name":"default","url":"mongodb://localhost:27017","db":"test"},{"name":"ddo","url":"dpds","db":"sa"},{"name":"koko","url":"sdodso@dsods.com:27017","db":"dodo"}]}
+{"connections":[{"name":"default","url":"mongodb://localhost:27017","db":"likeastoredb","active":true},{"name":"foo","url":"mongodb://test:8080","db":"roo","active":true}],"edited":"2013-06-02T14:46:54.072Z"}
