@@ -4,6 +4,7 @@ var path = require('path');
 //var mqconfig = JSON.parse(fs.readFileSync(path.join(__dirname, '../.mqconfig')));
 var url = 'mongodb://localhost:27017/likeastoredb';
 
+// TO DO: switch nativa mongodb driver api - http://mongodb.github.io/node-mongodb-native/api-generated/admin.html
 function find (query, options, callback) {
 	var queryObject = createQueryObject(query);
 

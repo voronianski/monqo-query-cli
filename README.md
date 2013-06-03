@@ -5,18 +5,59 @@
 Start from installing package via npm globally:
 
 ```bash
-npm install -g mongo-query-cli
+$: npm install -g mongo-query-cli
 ```
-
-and proceed with ``mq yourCollectionName`` bash commands. Please do not forget to connect to your db before making any ``mq``.
 
 ## Commands
 
-Normally you would like to make commands with
+Normally you would like to start with existing default connection or create your own:
+
+
+### mq connections
+
+Returns all connections available and stored.
 
 ```bash
-dmitri$: mq collection --find --update --save
+$: mq connections
 ```
+
+### mq create
+
+You can create new database connection and save it to settings, questions will be prompted:
+
+```bash
+$: mq create
+Connection name: yourName
+Connection url: mongodb://user:pass@example.com:37017
+Database name: production
+
+New connection "yourName" was successfully created
+```
+
+### mq remove <connection name>
+
+Removes database connection from settings, name is required:
+
+```bash
+$: mq remove yourName
+```
+
+### mq set [options] <connection name>
+
+Changes data in existing connection,
+
+Options available:
+
+- ``--db <new name>`` - change db name,
+- ``--url <new url>`` - change connection url,
+- ``--name <new name>`` - change connection name,
+- ``--active`` - set this connection as active
+
+## Help
+
+You can find descriptions of all commands with:
+
+``mq --help``
 
 ### --dbs
 

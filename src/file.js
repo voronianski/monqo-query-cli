@@ -130,6 +130,7 @@ function addConnection (connection, callback) {
 	});
 }
 
+// TO DO: do not allow remove last collection (?), force active to next if deleting active
 function removeConnection (connection, callback) {
 	checkConfigFile(function (err) {
 		if (err) {
