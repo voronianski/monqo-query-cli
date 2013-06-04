@@ -130,7 +130,6 @@ function addConnection (connection, callback) {
 	});
 }
 
-// TO DO: do not allow remove last collection (?), force active to next if deleting active
 function removeConnection (connection, callback) {
 	checkConfigFile(function (err) {
 		if (err) {
@@ -143,10 +142,19 @@ function removeConnection (connection, callback) {
 			}
 
 			data = JSON.parse(data);
+			var connects = data.connections;
 
-			data.connections.forEach(function (c, i) {
+			if (connects.length === 1) {
+				return callback('Sorry, you cannot remove last connection instance.');
+			}
+
+			connects.forEach(function (c, i) {
 				if (c.name === connection) {
-					data.connections.splice(i, 1);
+					if (c.active) {
+						var next = connects[0].name === c.name ? connects[1] : connects[0];
+						next.active = true;
+					}
+					connects.splice(i, 1);
 				}
 			});
 
@@ -188,5 +196,6 @@ module.exports = {
 	setup: setup,
 	showConnections: showConnections,
 	addConnection: addConnection,
-	removeConnection: removeConnection
+	removeConnection: removeConnection,
+	checkConfigFile: checkConfigFile
 };
