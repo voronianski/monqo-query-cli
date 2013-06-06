@@ -87,8 +87,6 @@ programm
 			}
 			process.exit();
 		});
-
-		// TO DO: operators - http://docs.mongodb.org/manual/reference/operator/
 	});
 
 programm.parse(process.argv);

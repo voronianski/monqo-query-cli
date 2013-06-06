@@ -18,10 +18,16 @@
     "test": "test"
   },
   "scripts": {
-    "test": ""
+    "test": "node_modules/.bin/mocha -R nyan ./test"
   },
-  "repository": "",
-  "author": "Dmitri Voronianski",
+  "bugs": "https://github.com/voronianski/mongo-query-cli/issues",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/voronianski/mongo-query-cli.git"
+  },
+  "author": "Dmitri Voronianski <dmitri.voronianski@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "mongojs": "~0.7.5",
@@ -31,5 +37,9 @@
     "cli-table": "~0.2.0",
     "mongodb": "~1.3.8",
     "mdconf": "0.0.1"
+  },
+  "devDependencies": {
+    "should": "~1.2.2",
+    "mocha": "~1.9.0"
   }
 }

@@ -5,7 +5,16 @@ var Table = require('cli-table');
 
 var mqconfig = path.join(__dirname, '../.mqconfig');
 
+/**
+ * Change property in connections settings
+ * @param connection {String} - 'default';
+ * @param options {Object} - { db: 'test', active: true }
+ */
 function setup (connection, options, callback) {
+	if (!connection || typeof connection !== 'string') {
+		return callback('Connection is not specified properly');
+	}
+
 	checkConfigFile(function (err) {
 		if (err) {
 			return callback(err);
@@ -63,6 +72,9 @@ function setup (connection, options, callback) {
 	});
 }
 
+/**
+ * Show available connections table
+ */
 function showConnections (callback) {
 	checkConfigFile(function (err) {
 		if (err) {
@@ -92,7 +104,15 @@ function showConnections (callback) {
 	});
 }
 
+/**
+ * Add connection to settings
+ * @param connection {Object} - { name: 'test', url: 'mongodb://user:pass@example.com:27017', db: 'dev' }
+ */
 function addConnection (connection, callback) {
+	if (!connection || typeof connection !== 'object') {
+		return callback('Connection param is not correct');
+	}
+
 	checkConfigFile(function (err) {
 		if (err) {
 			return callback(err);
@@ -130,7 +150,15 @@ function addConnection (connection, callback) {
 	});
 }
 
+/**
+ * Remove connection from settings
+ * @param connection {String} - 'default'
+ */
 function removeConnection (connection, callback) {
+	if (!connection || typeof connection !== 'string') {
+		return callback('Connection param is not correct');
+	}
+
 	checkConfigFile(function (err) {
 		if (err) {
 			return callback(err);
@@ -171,6 +199,9 @@ function removeConnection (connection, callback) {
 	});
 }
 
+/**
+ * Check if config file exists in root folder (will add default if not)
+ */
 function checkConfigFile (callback) {
 	var defaults = {
 		connections: [{
