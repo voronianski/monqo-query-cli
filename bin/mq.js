@@ -5,7 +5,7 @@ var path = require('path');
 var programm = require('commander');
 var colors = require('colors');
 var dbUtil = require('../src/connector.js');
-var config = require('../src/file.js');
+var config = require('../src/configParser.js');
 
 var version = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
 

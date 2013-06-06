@@ -3,8 +3,6 @@ var path = require('path');
 var _ = require('underscore');
 var Table = require('cli-table');
 
-var mqconfig = path.join(__dirname, '../.mqconfig');
-
 /**
  * Change property in connections settings
  * @param connection {String} - 'default';
@@ -61,12 +59,8 @@ function setup (connection, options, callback) {
 
 			data.edited = new Date();
 
-			fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				return callback(null);
+			saveConfigFile(JSON.stringify(data), function (err) {
+				return callback(err);
 			});
 		});
 	});
@@ -99,7 +93,7 @@ function showConnections (callback) {
 				table.push([c.name, c.url, c.db, status]);
 			});
 
-			return callback(null, table.toString());
+			return callback(null, table.toString(), table);
 		});
 	});
 }
@@ -139,12 +133,8 @@ function addConnection (connection, callback) {
 			data.connections.push(connection);
 			data.edited = new Date();
 
-			fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				return callback(null);
+			saveConfigFile(JSON.stringify(data), function (err) {
+				return callback(err);
 			});
 		});
 	});
@@ -188,12 +178,8 @@ function removeConnection (connection, callback) {
 
 			data.edited = new Date();
 
-			fs.writeFile(mqconfig, JSON.stringify(data), function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				return callback(null);
+			saveConfigFile(JSON.stringify(data), function (err) {
+				return callback(err);
 			});
 		});
 	});
@@ -201,8 +187,10 @@ function removeConnection (connection, callback) {
 
 /**
  * Check if config file exists in root folder (will add default if not)
+ * @param filePath {String} - optional, reinit another config file;
  */
-function checkConfigFile (callback) {
+function checkConfigFile (callback, filePath) {
+	var mqconfig = path.join(__dirname, '../.mqconfig');
 	var defaults = {
 		connections: [{
 			name: 'default',
@@ -211,6 +199,10 @@ function checkConfigFile (callback) {
 			active: true
 		}]
 	};
+
+	if (filePath && typeof filePath === 'string') {
+		mqconfig = path.join(__dirname, filePath);
+	}
 
 	fs.exists(mqconfig, function (exists) {
 		if (exists) {
@@ -223,10 +215,32 @@ function checkConfigFile (callback) {
 	});
 }
 
+/**
+ * Save config file helper
+ * @param data {String} = use JSON.stringify(data);
+ * @param filePath {String} - optional, reinit another config file;
+ */
+function saveConfigFile (data, callback, filePath) {
+	var mqconfig = path.join(__dirname, '../.mqconfig');
+
+	if (filePath && typeof filePath === 'string') {
+		mqconfig = path.join(__dirname, filePath);
+	}
+
+	fs.writeFile(mqconfig, data, function (err) {
+		if (err) {
+			return callback(err);
+		}
+
+		return callback(null);
+	});
+}
+
 module.exports = {
 	setup: setup,
 	showConnections: showConnections,
 	addConnection: addConnection,
 	removeConnection: removeConnection,
-	checkConfigFile: checkConfigFile
+	checkConfigFile: checkConfigFile,
+	saveConfigFile: saveConfigFile
 };
