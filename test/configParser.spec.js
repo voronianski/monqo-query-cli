@@ -73,6 +73,7 @@ describe('./src/configParser.spec.js', function () {
 		before(function (done) {
 			var data = {
 				name: 'mocha-test-changed',
+				url: 'mongodb://test:27017',
 				active: true
 			};
 
@@ -87,6 +88,10 @@ describe('./src/configParser.spec.js', function () {
 
 		it('should have changed connection name', function () {
 			config.should.have.property('name', 'mocha-test-changed');
+		});
+
+		it('should have changed connection url', function () {
+			config.should.have.property('url', 'mongodb://test:27017');
 		});
 
 		it('should be active connection', function () {
@@ -163,6 +168,27 @@ describe('./src/configParser.spec.js', function () {
 
 		it('should not contain connection object in config', function () {
 			config.connections.length.should.equal(1);
+		});
+	});
+
+	describe('when trying to add broken mongodb url string', function () {
+		beforeEach(function (done) {
+			var data = {
+				name: 'broken url',
+				url: 'test:27017',
+				db: 'test'
+			};
+
+			configUtil.addConnection(data, function (err, res) {
+				should.not.exist(res);
+				error = err;
+
+				done();
+			}, mqconfig);
+		});
+
+		it('should throw an error', function () {
+			error.should.equal('Connection url is incorrect, example: mongodb://connection:port');
 		});
 	});
 });

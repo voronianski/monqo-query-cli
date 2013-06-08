@@ -27,6 +27,10 @@ function setup (connection, options, callback, filePath) {
 			return callback('Please add options to change active connection');
 		}
 
+		if (!matchMongodbUrl(options.url)) {
+			return callback('Connection url is incorrect, example: mongodb://connection:port');
+		}
+
 		fs.readFile(mqconfig, 'utf-8', function (err, data) {
 			var changed = false;
 
