@@ -1,4 +1,5 @@
 node_modules
 .mqconfig
 .mqconfig-test
+test/.mqconfig-test
 *.log

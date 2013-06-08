@@ -34,7 +34,7 @@ programm
 				handleError(err);
 
 				console.log('New connection "%s" was successfully created'.yellow, obj.name);
-				console.log('View all connections with "mq connections" or activate it with "mq set --active <name>"');
+				console.log('View all connections with "mq connections" or activate it with "mq set --active <name>"'.white.underline);
 				process.exit();
 			});
 		});

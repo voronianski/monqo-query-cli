@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var userhome = require('userhome');
 var Table = require('cli-table');
 
 /**
@@ -24,10 +25,6 @@ function setup (connection, options, callback, filePath) {
 
 		if (_(options).isEmpty()) {
 			return callback('Please add options to change active connection');
-		}
-
-		if (filePath && typeof filePath === 'string') {
-			mqconfig = path.join(__dirname, filePath);
 		}
 
 		fs.readFile(mqconfig, 'utf-8', function (err, data) {
@@ -72,7 +69,7 @@ function setup (connection, options, callback, filePath) {
 				return callback(null, data);
 			});
 		});
-	});
+	}, filePath);
 }
 
 /**
@@ -83,10 +80,6 @@ function showConnections (callback, filePath) {
 	checkConfigFile(function (err, mqconfig) {
 		if (err) {
 			return callback(err);
-		}
-
-		if (filePath && typeof filePath === 'string') {
-			mqconfig = path.join(__dirname, filePath);
 		}
 
 		fs.readFile(mqconfig, 'utf-8', function (err, data) {
@@ -109,7 +102,7 @@ function showConnections (callback, filePath) {
 
 			return callback(null, table.toString(), table);
 		});
-	});
+	}, filePath);
 }
 
 /**
@@ -127,12 +120,8 @@ function addConnection (connection, callback, filePath) {
 			return callback(err);
 		}
 
-		if (!/^mongodb:\/\/.*?:\d+$/.test(connection.url)) {
+		if (!matchMongodbUrl(connection.url)) {
 			return callback('Connection url is incorrect, example: mongodb://connection:port');
-		}
-
-		if (filePath && typeof filePath === 'string') {
-			mqconfig = path.join(__dirname, filePath);
 		}
 
 		fs.readFile(mqconfig, 'utf-8', function (err, data) {
@@ -160,7 +149,7 @@ function addConnection (connection, callback, filePath) {
 				return callback(null, data);
 			});
 		});
-	});
+	}, filePath);
 }
 
 /**
@@ -176,10 +165,6 @@ function removeConnection (connection, callback, filePath) {
 	checkConfigFile(function (err, mqconfig) {
 		if (err) {
 			return callback(err);
-		}
-
-		if (filePath && typeof filePath === 'string') {
-			mqconfig = path.join(__dirname, filePath);
 		}
 
 		fs.readFile(mqconfig, 'utf-8', function (err, data) {
@@ -214,7 +199,7 @@ function removeConnection (connection, callback, filePath) {
 				return callback(null, data);
 			});
 		});
-	});
+	}, filePath);
 }
 
 /**
@@ -222,7 +207,8 @@ function removeConnection (connection, callback, filePath) {
  * @param filePath {String} - optional, reinit another config file;
  */
 function checkConfigFile (callback, filePath) {
-	var mqconfig = path.join(__dirname, '../.mqconfig');
+	var mqconfig = userhome('.mqconfig.json');
+
 	var defaults = {
 		connections: [{
 			name: 'default',
@@ -247,10 +233,46 @@ function checkConfigFile (callback, filePath) {
 	});
 }
 
+/**
+ * Get current active connection data
+ * @param filePath {String} - optional, reinit another config file;
+ */
+function getConnectionConfig (callback, filePath) {
+	checkConfigFile(function (err, mqconfig) {
+		if (err) {
+			return callback(err);
+		}
+
+		fs.readFile(mqconfig, 'utf-8', function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			data = JSON.parse(data);
+
+			var obj = _(data.connections).find(function (c) {
+				return c.active === true;
+			});
+
+			return callback(null, obj);
+		});
+	}, filePath);
+}
+
+function matchMongodbUrl (str) {
+	if (!str && typeof str !== 'string') {
+		return false;
+	}
+
+	var matcher = /^mongodb:\/\/.*?:\d+$/.test(str);
+	return matcher;
+}
+
 module.exports = {
 	setup: setup,
 	showConnections: showConnections,
 	addConnection: addConnection,
 	removeConnection: removeConnection,
-	checkConfigFile: checkConfigFile
+	checkConfigFile: checkConfigFile,
+	getConnectionConfig: getConnectionConfig
 };

@@ -2,14 +2,15 @@ describe('./src/configParser.spec.js', function () {
 	'use strict';
 
 	var fs = require('fs');
+	var path = require('path');
 	var should = require('should');
 	var configUtil = require('../src/configParser.js');
 
-	var mqconfig = '../.mqconfig-test';
+	var mqconfig = '../test/.mqconfig-test';
 	var config, error;
 
 	before(function (done) {
-		fs.exists(mqconfig, function (exists) {
+		fs.exists(path.join(__dirname, mqconfig), function (exists) {
 			if (exists) {
 				fs.unlink(path.join(__dirname, mqconfig), function (err) {
 					if (err) {
@@ -17,9 +18,9 @@ describe('./src/configParser.spec.js', function () {
 					}
 					return done();
 				});
+			} else {
+				return done();
 			}
-
-			return done();
 		});
 	});
 
@@ -37,32 +38,34 @@ describe('./src/configParser.spec.js', function () {
 	});
 
 	describe('addConnection() method', function () {
-		before(function (done) {
-			var data = {
-				name: 'mocha-test',
-				url: 'mongodb://user:pass@example.com:27017',
-				db: 'dev'
-			};
+		describe('when passing correct data', function () {
+			before(function (done) {
+				var data = {
+					name: 'mocha-test',
+					url: 'mongodb://user:pass@example.com:27017',
+					db: 'dev'
+				};
 
-			configUtil.addConnection(data, function (err, res) {
-				should.not.exist(error);
-				should.exist(res);
-				config = res.connections[1];
+				configUtil.addConnection(data, function (err, res) {
+					should.not.exist(error);
+					should.exist(res);
+					config = res.connections[1];
 
-				done();
-			}, mqconfig);
-		});
+					done();
+				}, mqconfig);
+			});
 
-		it('should add connection with name "mocha-test"', function () {
-			config.should.have.property('name', 'mocha-test');
-		});
+			it('should add connection with name "mocha-test"', function () {
+				config.should.have.property('name', 'mocha-test');
+			});
 
-		it('should add connection with url "mongodb://user:pass@example.com:27017"', function () {
-			config.should.have.property('url', 'mongodb://user:pass@example.com:27017');
-		});
+			it('should add connection with url "mongodb://user:pass@example.com:27017"', function () {
+				config.should.have.property('url', 'mongodb://user:pass@example.com:27017');
+			});
 
-		it('should add connection with db "dev"', function () {
-			config.should.have.property('db', 'dev');
+			it('should add connection with db "dev"', function () {
+				config.should.have.property('db', 'dev');
+			});
 		});
 	});
 
@@ -88,6 +91,28 @@ describe('./src/configParser.spec.js', function () {
 
 		it('should be active connection', function () {
 			config.active.should.be.true;
+		});
+	});
+
+	describe('getConnectionConfig() method', function () {
+		var connection;
+
+		before(function (done) {
+			configUtil.getConnectionConfig(function (err, res) {
+				should.not.exist(error);
+				should.exist(res);
+				connection = res;
+
+				done();
+			}, mqconfig);
+		});
+
+		it('should return current active connection', function () {
+			connection.active.should.true;
+		});
+
+		it('should return current name connection', function () {
+			connection.name.should.equal('mocha-test-changed');
 		});
 	});
 
