@@ -27,7 +27,7 @@ function setup (connection, options, callback, filePath) {
 			return callback('Please add options to change active connection');
 		}
 
-		if (!matchMongodbUrl(options.url)) {
+		if (options.url && !matchMongodbUrl(options.url)) {
 			return callback('Connection url is incorrect, example: mongodb://connection:port');
 		}
 

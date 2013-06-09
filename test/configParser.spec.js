@@ -70,32 +70,54 @@ describe('./src/configParser.spec.js', function () {
 	});
 
 	describe('setup() method', function () {
-		before(function (done) {
-			var data = {
-				name: 'mocha-test-changed',
-				url: 'mongodb://test:27017',
-				active: true
-			};
+		describe('when all options are passed', function () {
+			before(function (done) {
+				var data = {
+					name: 'mocha-tasty',
+					url: 'mongodb://test:27017',
+					active: true
+				};
 
-			configUtil.setup('mocha-test', data, function (err, res) {
-				should.not.exist(error);
-				should.exist(res);
-				config = res.connections[1];
+				configUtil.setup('mocha-test', data, function (err, res) {
+					should.not.exist(error);
+					should.exist(res);
+					config = res.connections[1];
 
-				done();
-			}, mqconfig);
+					done();
+				}, mqconfig);
+			});
+
+			it('should have changed connection name', function () {
+				config.should.have.property('name', 'mocha-tasty');
+			});
+
+			it('should have changed connection url', function () {
+				config.should.have.property('url', 'mongodb://test:27017');
+			});
+
+			it('should be active connection', function () {
+				config.active.should.be.true;
+			});
 		});
 
-		it('should have changed connection name', function () {
-			config.should.have.property('name', 'mocha-test-changed');
-		});
+		describe('when some options are missed', function () {
+			before(function (done) {
+				var data = {
+					name: 'mocha-test-changed'
+				};
 
-		it('should have changed connection url', function () {
-			config.should.have.property('url', 'mongodb://test:27017');
-		});
+				configUtil.setup('mocha-tasty', data, function (err, res) {
+					should.not.exist(error);
+					should.exist(res);
+					config = res.connections[1];
 
-		it('should be active connection', function () {
-			config.active.should.be.true;
+					done();
+				}, mqconfig);
+			});
+
+			it('should have changed connection name', function () {
+				config.should.have.property('name', 'mocha-test-changed');
+			});
 		});
 	});
 

@@ -1,74 +1,81 @@
 #! /usr/bin/env node
 
+/**
+ * Code licensed under the BSD License
+ * Dmitri Voronianski <dmitri.voronianski@gmail.com>
+ *
+ * (c) 2013 All Rights Reserved.
+ */
+
 var fs = require('fs');
 var path = require('path');
-var programm = require('commander');
-var colors = require('colors');
+var program = require('commander');
+var logger = require('../src/logger.js');
 var dbUtil = require('../src/connector.js');
-var config = require('../src/configParser.js');
+var configUtil = require('../src/configParser.js');
 
 var version = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'))).version;
 
-programm
+program
 	.version(version)
 	.option('-s, --save <file>', 'save output to specified file');
 
-programm
+program
 	.command('connections')
 	.description('show available connections')
 	.action(function () {
-		config.showConnections(function (err, table) {
+		configUtil.showConnections(function (err, table) {
 			handleError(err);
 
-			console.log(table);
+			logger.clean(table);
 			process.exit();
 		});
 	});
 
-programm
+program
 	.command('create')
 	.description('create new connection')
 	.action(function () {
-		programm.prompt({ name: 'Connection name: ', url: 'Connection url: ', db: 'Database name: '}, function (obj) {
-			config.addConnection(obj, function (err) {
+		program.prompt({ name: 'Connection name: ', url: 'Connection url: ', db: 'Database name: '}, function (obj) {
+			configUtil.addConnection(obj, function (err) {
 				handleError(err);
 
-				console.log('New connection "%s" was successfully created'.yellow, obj.name);
-				console.log('View all connections with "mq connections" or activate it with "mq set --active <name>"'.white.underline);
+				logger.info('New connection "%s" was successfully created', obj.name);
+				logger.info('View all connections with "mq connections" or activate it with "mq set --active <name>"');
 				process.exit();
 			});
 		});
 	});
 
-programm
+program
 	.command('remove <connection>')
 	.description('remove existing connection')
 	.action(function (name) {
-		config.removeConnection(name, function (err) {
+		configUtil.removeConnection(name, function (err) {
 			handleError(err);
 
-			console.log('Connection "%s" is successfully removed'.yellow, name);
+			logger.info('Connection "%s" is successfully removed', name);
 			process.exit();
 		});
 	});
 
-programm
-	.command('set <connection>')
+program
+	.command('setup <connection>')
 	.description('setup fields to connection or current active if not specified')
 	.option('--db <value>', 'setup database name')
 	.option('--url <value>', 'setup connection url')
 	.option('--name <value>', 'setup connection name')
 	.option('--active', 'set connection as active')
 	.action(function (connection, options) {
-		config.setup(connection, options, function (err) {
+		configUtil.setup(connection, options, function (err) {
 			handleError(err);
 
-			console.log('Database config changed succesfully!'.yellow);
+			logger.info('Database config changed succesfully!');
 			process.exit();
 		});
 	});
 
-programm
+program
 	.command('find [query]')
 	.description('select documents in collection')
 	.option('--url <connection>', 'set connection url string, default: localhost:27017')
@@ -80,20 +87,25 @@ programm
 			handleError(err);
 
 			var documents = docs.length > 1 ? 'documents' : 'document';
-			console.info('Found %s %s in "%s" collection:'.yellow, docs.length, documents, options.collection);
+			logger.info('Found %s %s in "%s" collection:', docs.length, documents, options.collection);
 
 			if (!options.count) {
-				console.log(docs);
+				logger.info(docs);
 			}
 			process.exit();
 		});
 	});
 
-programm.parse(process.argv);
+program.on('--help', function () {
+	// TO DO: switch to flatiron (?)
+	logger.clean(require('../src/usage.js'));
+});
+
+program.parse(process.argv);
 
 function handleError (error) {
 	if (error) {
-		console.error(colors.red(error));
+		logger.error(error);
 		process.exit(1);
 	}
 }

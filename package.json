@@ -1,19 +1,20 @@
 {
   "name": "mongo-query-cli",
   "version": "0.1.0",
-  "description": "Let's make mongo shell queries from bash!",
+  "description": "Let's make mongodb queries from bash!",
   "keywords": [
     "mongodb",
     "mongo",
+    "bash",
     "shell",
     "queries",
     "cli"
   ],
   "main": "index.js",
-  "preferGlobal": true,
   "bin": {
     "mq": "bin/mq.js"
   },
+  "preferGlobal": true,
   "directories": {
     "test": "test"
   },
@@ -41,7 +42,9 @@
     "cli-table": "~0.2.0",
     "mongodb": "~1.3.8",
     "userhome": "~0.1.0",
-    "update-notifier": "~0.1.3"
+    "update-notifier": "~0.1.3",
+    "cli-log": "0.0.7",
+    "logme": "~0.3.8"
   },
   "devDependencies": {
     "should": "~1.2.2",
