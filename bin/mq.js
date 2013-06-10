@@ -96,10 +96,14 @@ program
 		});
 	});
 
-program.on('--help', function () {
-	// TO DO: switch to flatiron (?)
-	logger.clean(require('../src/usage.js'));
+program.command('*').action(function () {
+	this.help();
 });
+
+if (process.argv.length == 2) {
+	logger.warning('No command specified with "mq".\n');
+	logger.info('Check out all available commands with "mq --help"');
+}
 
 program.parse(process.argv);
 
