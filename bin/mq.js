@@ -83,15 +83,32 @@ program
 	.option('-c, --collection <name>', 'set collection name for searching')
 	.option('--count', 'display only count of documents')
 	.action(function (query, options) {
+		console.log(query);
+		console.log(typeof query);
+
+		console.log(options);
 		dbUtil.find(query, options, function (err, docs) {
 			handleError(err);
 
 			var documents = docs.length > 1 ? 'documents' : 'document';
-			logger.info('Found %s %s in "%s" collection:', docs.length, documents, options.collection);
+			console.log('Found %s %s in "%s" collection:', docs.length, documents, options.collection);
 
 			if (!options.count) {
-				logger.info(docs);
+				console.dir(docs);
 			}
+			process.exit();
+		});
+	});
+
+program
+	.command('show')
+	.description('show all dbs (spike on mongodb native and flatiron switch)')
+	.action(function () {
+		var db = require('../src/db.js');
+
+		db.showDbs(function (err, dbs) {
+			handleError(err);
+			console.log(dbs);
 			process.exit();
 		});
 	});
