@@ -101,8 +101,10 @@ program.command('*').action(function () {
 });
 
 if (process.argv.length == 2) {
-	logger.warning('No command specified with "mq".\n');
-	logger.info('Check out all available commands with "mq --help"');
+	var mqascii = require('../src/mqascii.js');
+	logger.clean(mqascii);
+	logger.clean('');
+	logger.info('Check out all available commands with "mq --help" or "mq -h"\n');
 }
 
 program.parse(process.argv);
