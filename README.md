@@ -53,6 +53,55 @@ Options available:
 - ``--name <new name>`` - change connection name,
 - ``--active`` - set this connection as active
 
+mq
+
+-h --help
+-s --save filename
+
+mq connections
+mq create
+mq setup --db dbname --url dburi --name connectionname --active
+mq remove connectionname
+
+mq show dbs
+mq show collections
+mq show info
+
+mq find -c cname "query" --count
+mq update -c cname -f "query" -u "query" --count
+
+mq find -c cname "exist('field')"
+
+query = string ""
+
+example queries:
+"_id: 100" / "_id: 100 && name: 'John'" / "exist('field')" / "notExist('field')"
+
+$type operator helpers implementation:
+-isString('field')
+-isArray('field')
+-isObject('field')
+-isBoolean('field')
+-isBinary('field')
+-isDate('field')
+-isObjectId('field')
+-isTimestamp('field')
+-isNull('field')
+-isRegexp'field'
+
+$exists operator:
+-exist('field')
+-notExist('field')
+
+$ne operator:
+not('field: data')
+
+$and:
+&&
+
+$or:
+||
+
 ## Help
 
 You can find descriptions of all commands with:
