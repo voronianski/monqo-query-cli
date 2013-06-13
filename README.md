@@ -60,17 +60,16 @@ mq
 
 mq connections
 mq create
-mq setup --db dbname --url dburi --name connectionname --active
-mq remove connectionname
+mq setup --db <dbname> --url <dburi> --name <connectionname> --active
+mq delete <connectionname>
 
 mq show dbs
 mq show collections
 mq show info
 
-mq find -c cname "query" --count
-mq update -c cname -f "query" -u "query" --count
-
-mq find -c cname "exist('field')"
+mq find -c <cname> "query" --count
+mq update -c <cname> -f "query" -u "query" --count
+mq remove -c <cname> "query" --one
 
 query = string ""
 
