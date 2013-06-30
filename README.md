@@ -5,7 +5,7 @@
 Start from installing package via npm globally:
 
 ```bash
-$: npm install -g mongo-query-cli
+$ npm install -g mongo-query-cli
 ```
 
 ## Commands
@@ -18,7 +18,7 @@ Normally you would like to start with existing default connection or create your
 Returns all connections available and stored.
 
 ```bash
-$: mq connections
+$ mq connections
 ```
 
 ### mq create
@@ -26,7 +26,7 @@ $: mq connections
 You can create new database connection and save it to settings, questions will be prompted:
 
 ```bash
-$: mq create
+$ mq create
 Connection name: yourName
 Connection url: mongodb://user:pass@example.com:37017
 Database name: production
@@ -39,7 +39,7 @@ New connection "yourName" was successfully created
 Removes database connection from settings, name is required:
 
 ```bash
-$: mq remove yourName
+$ mq remove yourName
 ```
 
 ### mq set [options] <connection name>
