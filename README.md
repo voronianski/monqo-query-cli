@@ -53,6 +53,8 @@ Options available:
 - ``--name <new name>`` - change connection name,
 - ``--active`` - set this connection as active
 
+---
+
 mq
 
 -h --help
