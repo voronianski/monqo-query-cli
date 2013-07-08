@@ -53,6 +53,10 @@ Options available:
 - ``--name <new name>`` - change connection name,
 - ``--active`` - set this connection as active
 
+### mq --help
+
+You can find descriptions of all commands.
+
 ---
 
 mq
@@ -102,12 +106,6 @@ $and:
 
 $or:
 ||
-
-## Help
-
-You can find descriptions of all commands with:
-
-``mq --help``
 
 ## Why?!
 
