@@ -110,3 +110,7 @@ $or:
 ## Why?!
 
 Because it's sometimes very annoying to type long queries in mongo shell, and I don't like GUI apps for that :)
+
+---
+
+(c) 2013 MIT License
